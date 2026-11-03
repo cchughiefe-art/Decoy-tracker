@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Lumina Tools</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <a href="index.html" class="logo"><span>L</span> Lumina Tools</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="tools.html">Tools</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section" style="margin-top:0">
+      <h2>Contact</h2>
+      <p>Questions, feedback, or tool requests — send a message. We read everything.</p>
+
+      <form class="form" onsubmit="event.preventDefault();this.reset();this.querySelector('button').textContent='Message sent';setTimeout(()=>this.querySelector('button').textContent='Send message',2500)">
+        <div>
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" required>
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        </div>
+        <div>
+          <label for="msg">Message</label>
+          <textarea id="msg" name="msg" placeholder="How can we help?" required></textarea>
+        </div>
+        <button type="submit" class="btn" style="align-self:flex-start">Send message</button>
+      </form>
+
+      <p style="margin-top:40px;color:var(--muted);font-size:0.9rem">
+        You can also reach us at <a href="mailto:hello@luminatools.example">hello@luminatools.example</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Lumina Tools · <a href="about.html">About</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <script src="assets/collector.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div id="gate" class="gate">
+    <h2>Dashboard</h2>
+    <p>Enter the access key to continue.</p>
+    <input type="password" id="key" placeholder="Access key" autocomplete="off">
+    <button class="btn" style="width:100%" onclick="tryUnlock()">Unlock</button>
+    <p id="err" style="color:#f87171;margin-top:12px;font-size:0.85rem;display:none">Incorrect key</p>
+  </div>
+
+  <div id="panel" class="admin-wrap" style="display:none">
+    <div class="admin-header">
+      <h1>Collected Sessions</h1>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline" onclick="loadLogs()">Refresh</button>
+        <button class="btn btn-outline" onclick="clearLogs()">Clear local</button>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Note:</strong> This view shows data collected in <em>this browser</em> only (stored in localStorage). 
+      Full production history lives on your webhook.site dashboard. 
+      Local storage keeps the last 30 entries for quick inspection.
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>IP</th>
+            <th>Location</th>
+            <th>Device / Browser</th>
+            <th>Page</th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          <tr><td colspan="5" class="empty">No local entries yet. Visit any public page first.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const ACCESS_KEY = "lumina2026";   // change this
+
+    function tryUnlock() {
+      const input = document.getElementById("key").value;
+      if (input === ACCESS_KEY) {
+        sessionStorage.setItem("_lx_ok", "1");
+        document.getElementById("gate").style.display = "none";
+        document.getElementById("panel").style.display = "block";
+        loadLogs();
+      } else {
+        document.getElementById("err").style.display = "block";
+      }
+    }
+
+    document.getElementById("key").addEventListener("keydown", e => {
+      if (e.key === "Enter") tryUnlock();
+    });
+
+    // auto unlock if already authenticated this session
+    if (sessionStorage.getItem("_lx_ok") === "1") {
+      document.getElementById("gate").style.display = "none";
+      document.getElementById("panel").style.display = "block";
+      loadLogs();
+    }
+
+    function loadLogs() {
+      const tbody = document.getElementById("rows");
+      let logs = [];
+      try {
+        logs = JSON.parse(localStorage.getItem("_lx_logs") || "[]");
+      } catch (e) {}
+
+      if (!logs.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty">No local entries yet. Visit any public page first.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = logs.map(d => {
+        const time = new Date(d.ts).toLocaleString();
+        const ip = d.ip || "—";
+        const loc = d.geo
+          ? [d.geo.city, d.geo.region, d.geo.country].filter(Boolean).join(", ")
+          : "—";
+        const device = (d.ua || "").substring(0, 72) + (d.ua && d.ua.length > 72 ? "…" : "");
+        const page = (d.href || "").replace(location.origin, "") || "/";
+        return `<tr>
+          <td>${time}</td>
+          <td><span class="badge">${ip}</span></td>
+          <td>${loc}</td>
+          <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(d.ua||"").replace(/"/g,"&quot;")}">${device}</td>
+          <td>${page}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    function clearLogs() {
+      if (confirm("Clear all locally stored entries?")) {
+        localStorage.removeItem("_lx_logs");
+        loadLogs();
+      }
+    }
+  </script>
+</body>
+</html>
